@@ -159,6 +159,7 @@ function TwitterBot() {
 				console.log(err);
 			}
 			sendMessage(directMsg.direct_message.sender_screen_name, message);
+			makeEvent(directMsg.direct_message.sender.id_str);
 			console.log(message);
 		});
 	}
@@ -192,6 +193,50 @@ function TwitterBot() {
 				console.log(err);
 			} else {
 				console.log('Message was sent!');
+			}
+		}
+	}
+
+	function makeEvent(sender) {
+		var msg = {
+				  "event": {
+				    "type": "message_create",
+				    "message_create": {
+				      "target": {
+				        "recipient_id": sender
+				      },
+				      "message_data": {
+				        "text": "Flight SF8020 from San Francisco to Montreal is ahead of schedule and will land in approximately 15 minutes. Can we help with anything else?",
+				        "ctas": [
+				          {
+				            "type": "web_url",
+				            "label": "See flight details",
+				            "url": "https://www.github.com/fossasia/susi_fbbot"
+				          },
+				          {
+				            "type": "web_url",
+				            "label": "Map it",
+				            "url": "https://www.github.com/fossasia/susi_fbbot"
+				          },
+				          {
+				            "type": "web_url",
+				            "label": "Visit MyAirline.domain",
+				            "url": "https://www.github.com/fossasia/susi_fbbot"
+				          }
+				        ]
+				      }
+				    }
+				  }
+	 			}
+
+		T.post('direct_messages/events/new', msg, sent);
+
+		function sent(err, data, response) {
+			if (err) {
+				console.log('Something went wrong!');
+				console.log(err);
+			} else {
+				console.log('Event was sent!');
 			}
 		}
 	}
