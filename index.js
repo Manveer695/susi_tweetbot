@@ -91,20 +91,22 @@ function TwitterBot() {
 		console.log('Follow event !');
 		var name = eventMsg.source.name;
 		var screenName = eventMsg.source.screen_name;
-		var x = Math.floor(Math.random()*1000);
-		var user_id1 = eventMsg.source.id_str;
-		T.post('friendships/create', {user_id : user_id1},  function(err, tweets, response){
-			if (err) {
-				console.log('friendships/create ' + err);
-				tweetIt('@' + screenName + ' Thank you for following me! Your lucky number is ' + x);
-				console.log("----Couldn't follow back!");
-				console.log(response);
-			} 
-			else {    
-				tweetIt('@' + screenName + ' Thank you for following me! Your lucky number is ' + x + '.I followed you back, you can also direct message me now! ;)');
-				console.log("----followed back!");
-			} 
-		});	
+		if(screenName != 'SusiAI1'){
+			var x = Math.floor(Math.random()*1000);
+			var user_id1 = eventMsg.source.id_str;
+			T.post('friendships/create', {user_id : user_id1},  function(err, tweets, response){
+				if (err) {
+					console.log('friendships/create ' + err);
+					tweetIt('@' + screenName + ' Thank you for following me! Your lucky number is ' + x);
+					console.log("----Couldn't follow back!");
+					console.log(response);
+				} 
+				else {    
+					tweetIt('@' + screenName + ' Thank you for following me! Your lucky number is ' + x + '.I followed you back, you can also direct message me now! ;)');
+					console.log("----followed back!");
+				} 
+			});
+		}	
 	}
 
 	stream.on('direct_message', reply);
@@ -199,12 +201,43 @@ function TwitterBot() {
 
 	function sendWelcomeMessage(){
 		var msg = {
-		  "welcome_message" : {
-		    "message_data": {
-		      "text": "Welcome!",
-		    }
-		  }
-		}
+					  "event": {
+					    "type": "message_create",
+					    "message_create": {
+					      "target": {
+					        "recipient_id": "844385345234"
+					      },
+					      "message_data": {
+					        "text": "What's your favorite type of bird?",
+					        "quick_reply": {
+					          "type": "options",
+					          "options": [
+					            {
+					              "label": "Red Bird",
+					              "description": "A description about the red bird.",
+					              "metadata": "external_id_1"
+					            },
+					            {
+					              "label": "Blue Bird",
+					              "description": "A description about the blue bird.",
+					              "metadata": "external_id_2"
+					            },
+					            {
+					              "label": "Black Bird",
+					              "description": "A description about the black bird.",
+					              "metadata": "external_id_3"
+					            },
+					            {
+					              "label": "White Bird",
+					              "description": "A description about the white bird.",
+					              "metadata": "external_id_4"
+					            }
+					          ]
+					        }
+					      }
+					    }
+					  }
+					};
 		T.post('direct_messages/welcome_messages/new', msg, sent);
 		function sent(err, data, response) {
 			if (err) {
