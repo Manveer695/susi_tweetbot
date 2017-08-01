@@ -212,7 +212,7 @@ function TwitterBot() {
 				console.log(err);
 			} else {
 				console.log('Message was sent!\n');
-				console.log(data+'\n');
+				console.log(JSON.stringify(data)+'\n');
 			}
 		}
 	}
