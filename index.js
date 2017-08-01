@@ -17,6 +17,7 @@ var T = new Twit({
 });
 
 function TwitterBot() {
+	sendWelcomeMessage();
 	setInterval(function() { http.get(heroku_deploy_url); }, 1800000);
 	var stream = T.stream('user');
 	
@@ -192,6 +193,26 @@ function TwitterBot() {
 				console.log(err);
 			} else {
 				console.log('Message was sent!');
+			}
+		}
+	}
+
+	function sendWelcomeMessage(){
+		var msg = {
+		  "welcome_message" : {
+		    "message_data": {
+		      "text": "Welcome!",
+		    }
+		  }
+		}
+		T.post('direct_messages/welcome_messages/new', msg, sent);
+		function sent(err, data, response) {
+			if (err) {
+				console.log('Something went wrong!');
+				console.log(err);
+			} else {
+				console.log('Message was sent!\n');
+				console.log(data+'\n');
 			}
 		}
 	}
