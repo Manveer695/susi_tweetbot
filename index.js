@@ -202,13 +202,7 @@ function TwitterBot() {
 	function sendWelcomeMessage(){
 		var msg = {
   					"welcome_message" : {
-    				"message_data": {
-						"event": {
-					    "type": "message_create",
-					    "message_create": {
-					      "target": {
-					        "recipient_id": "844385345234"
-					      },
+    				
 					      "message_data": {
 					        "text": "What's your favorite type of bird?",
 					        "quick_reply": {
@@ -238,10 +232,7 @@ function TwitterBot() {
 					        }
 					      }
 					    }
-					  }
-					}
-				}
-			};
+					  };
 		T.post('direct_messages/welcome_messages/new', msg, sent);
 		function sent(err, data, response) {
 			if (err) {
