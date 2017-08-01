@@ -201,7 +201,9 @@ function TwitterBot() {
 
 	function sendWelcomeMessage(){
 		var msg = {
-					  "event": {
+  					"welcome_message" : {
+    				"message_data": {
+						"event": {
 					    "type": "message_create",
 					    "message_create": {
 					      "target": {
@@ -237,7 +239,9 @@ function TwitterBot() {
 					      }
 					    }
 					  }
-					};
+					}
+				}
+			};
 		T.post('direct_messages/welcome_messages/new', msg, sent);
 		function sent(err, data, response) {
 			if (err) {
