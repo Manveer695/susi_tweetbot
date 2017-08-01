@@ -213,9 +213,29 @@ function TwitterBot() {
 			} else {
 				console.log('Message was sent!\n');
 				console.log(JSON.stringify(data)+'\n');
+				
+				// Making a welcome message rule
+				var welcomeId = data.welcome_message.id;
+				var welcomeRule = {
+				  "welcome_message_rule": {
+				    "welcome_message_id": welcomeId
+				  }
+				};
+
+				T.post('direct_messages/welcome_messages/rules/new', welcomeRule, sent);
+				
+				function sent(err, data, response) {
+					if (err) {
+						console.log('Something went wrong!');
+						console.log(err);
+					} else {
+						console.log('Message was sent!\n');
+						console.log(JSON.stringify(data)+'\n');
+					}
+				}	
 			}
 		}
-	}
+	}	
 }
 app.listen(app.get('port'), function() {
 	console.log('Running on port ', app.get('port'));
