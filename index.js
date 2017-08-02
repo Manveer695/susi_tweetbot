@@ -217,7 +217,7 @@ function TwitterBot() {
 			var msg = {
   					"welcome_message" : {
 					      "message_data": {
-					        "text": message,
+					        "text": "Welcome to SUSI A.I.!",
 					        "quick_reply": {
 					          "type": "options",
 					          "options": [
