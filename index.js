@@ -127,6 +127,7 @@ function TwitterBot() {
 			if (!err && response.statusCode === 200) {
 				if(data.answers[0].actions[1]){
 					if(data.answers[0].actions[1].type === 'rss'){
+						console.log("Kidaan!");
 						message += 'I found this on the web-:\n\n'
 						for(var i=0;i<((data.answers[0].metadata.count)>50?50:data.answers[0].metadata.count);i++){
 								message += ('Title : ');
