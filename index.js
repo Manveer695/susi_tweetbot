@@ -301,7 +301,7 @@ function TwitterBot() {
 		                        "recipient_id": sender
 		                      },
 		                      "message_data": {
-		                        "text": txt,,
+		                        "text": txt,
 							  	"entities": {
 							    	"hashtags": [],
 							    	"symbols": [],
