@@ -312,14 +312,7 @@ function TwitterBot() {
 							      		"indices": [80, 103]
 							    	}],
 							    	"user_mentions": []
-							  	},
-		                        "ctas": [
-		                          {
-		                            "type": "web_url",
-		                            "label": "Share with your followers",
-		                            "url": "https://twitter.com/intent/tweet?text="+encodeURI("Reply by SUSI.AI - ")+encodeURI(txt)+"%0A"+encodeURI(message)+"%0Ahttps://twitter.com/SusiAI1"
-		                          }
-		                        ]
+							  	}
 		                      }
 		                    }
 		                  }
