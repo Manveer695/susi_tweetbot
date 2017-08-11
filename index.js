@@ -187,7 +187,18 @@ function TwitterBot() {
 	function sendMessage(sender, txt) {
 		var msg = {
 			text: txt,
-			screen_name: sender
+			screen_name: sender,
+		  	"entities": {
+		    	"hashtags": [],
+		    	"symbols": [],
+		    	"urls": [{
+		      		"url": "https:\/\/t.co\/XdXRudPXH5",
+		      		"expanded_url": "https:\/\/blog.twitter.com\/2013\/rich-photo-experience-now-in-embedded-tweets-3",
+		      		"display_url": "blog.twitter.com\/2013\/rich-phot\u2026",
+		      		"indices": [80, 103]
+		    	}],
+		    	"user_mentions": []
+		  	}
 		}
 		T.post('direct_messages/new', msg, sent);
 
