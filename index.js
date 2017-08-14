@@ -149,7 +149,7 @@ function TwitterBot() {
 		console.log('You receive a message!');
 		console.log(directMsg);
 
-		if(directMsg.direct_message.text === "Get started" || directMsg.direct_message.text === "Start chatting")
+		if(directMsg.direct_message.text === "Get started" || directMsg.direct_message.text === "Start chatting" || directMsg.direct_message.text === "How to contribute?")
 			sendEvent(senderName, senderId, directMsg.direct_message.text, "");
 		else{
 			var queryUrl = 'http://api.susi.ai/susi/chat.json?q=' + encodeURI(directMsg.direct_message.text);
@@ -361,47 +361,6 @@ function TwitterBot() {
 						console.log('Something went wrong!');
 						console.log(err);
 					} else {
-						var msg = {
-								  "event": {
-								    "type": "message_create",
-								    "message_create": {
-								      "target": {
-								        "recipient_id": senderId
-								      },
-									"message_data": {
-								        "text": "You can try the following:",
-								        "quick_reply": {
-								          "type": "options",
-								          "options": [
-								            {
-								              "label": "What is FOSSASIA?",
-								              "metadata": "external_id_4"
-								            },
-								            {
-								              "label": "Who is Einstein?",
-								              "metadata": "external_id_5"
-								            },
-								            {
-								              "label": "Borders with INDIA",
-								              "metadata": "external_id_6"
-								            }
-								          ]
-								        }
-								      }
-								    }
-								   }
-						};
-						T.post('direct_messages/events/new', msg, sent2);
-
-						function sent2(err, data, response) {
-							if (err) {
-								console.log('Something went wrong!');
-								console.log(err);
-							} else {
-								console.log('Event was sent!');
-							}
-						}
-
 						console.log('Message was sent!');
 					}
 				}
@@ -453,13 +412,117 @@ function TwitterBot() {
 					if (err) {
 						console.log('Something went wrong!');
 						console.log(err);
-					} else {
+					} 
+					else {
 						console.log('Event was sent!');
+						function delay(time) {
+						  var d1 = new Date();
+						  var d2 = new Date();
+						  while (d2.valueOf() < d1.valueOf() + time) {
+						    d2 = new Date();
+						  }
+						}
+						delay(200);
+						var msg = {
+		                  "event": {
+		                    "type": "message_create",
+		                    "message_create": {
+								"target": {
+									"recipient_id": senderId
+								},
+								"message_data": {
+			                      "text": "Start Contributing:",
+			                      "quick_reply": {
+			                        "type": "options",
+			                        "options": [
+			                          {
+			                            "label": "How to contribute?",
+			                            "metadata": "external_id_3"
+			                          }
+			                        ]
+			                      }
+		                    	}
+	                    	}
+						}
+					};
+					T.post('direct_messages/events/new', msg, sent3);
+
+					function sent3(err, data, response) {
+						if (err) {
+							console.log('Something went wrong!');
+							console.log(err);
+						} 
+						else {
+							console.log('Event was sent!');
+						}
 					}
 				}
+			}
 			});
+		}
+		if(query === "How to contribute?")
+		{
+			function delay(time) {
+			  var d1 = new Date();
+			  var d2 = new Date();
+			  while (d2.valueOf() < d1.valueOf() + time) {
+			    d2 = new Date();
+			  }
+			}
+			delay(200);
+			sendCTAMessage("Contribution",senderId,"Visit Repository", "https://www.github.com/fossasia/susi_server");
 		}		
 	}	
+
+	function sendCTAMessage(query, senderId, label, url){
+		var queryUrl = 'http://api.susi.ai/susi/chat.json?q='+encodeURI(query);
+		var message = '';
+		request({
+			url: queryUrl,
+			json: true
+		}, function (err, response, data) {
+			if (!err && response.statusCode === 200) {
+				message = data.answers[0].actions[0].expression;
+      		}
+			else{
+				message = 'Oops, Looks like Susi is taking a break, She will be back soon';
+				console.log(err);
+			}
+			var msg = {
+                  "event": {
+                    "type": "message_create",
+                    "message_create": {
+                      "target": {
+                        "recipient_id": senderId
+                      },
+                      "message_data": {
+                        "text": message,
+                        "ctas": [
+                          {
+                            "type": "web_url",
+                            "label": label,
+                            "url": url
+                          }
+                        ]
+                      }
+                    }
+                  }
+                };
+			T.post('direct_messages/events/new', msg, sent);
+
+			function sent(err, data, response) {
+				if (err) {
+					console.log('Something went wrong!');
+					console.log(err);
+				} 
+				else {
+					console.log('Event was sent!');
+					if(query !== "Gitter channel")
+						sendCTAMessage("Gitter channel",senderId,"Chat on Gitter", "https://www.gitter.im/fossasia/susi_server");
+				}
+			}
+		});
+	}
 }
 
 app.listen(app.get('port'), function() {
