@@ -380,6 +380,7 @@ function TwitterBot() {
 							        "quick_reply": {
 							          "type": "text_input",
 							          "text_input": {
+							          	"keyboard" : "string",
 							            "label": "Confirmation Number"
 							          }
 							        }
