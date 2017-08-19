@@ -368,26 +368,43 @@ function TwitterBot() {
 			}
 			console.log('hello\n');
 			var msg = {
-			  "event": {
-			    "type": "message_create",
-			    "message_create": {
-			      "target": {
-			        "recipient_id": sender
-			      },
-			      "message_data": {
-			        "text:": "Please provide your confirmation number.",
-			        "quick_reply": {
-			          "type": "text_input",
-			          "text_input": {
-			            "keyboard": "number",
-			            "label": "Confirmation Number",
-			            "metadata": "external_id_1"
-			          }
-			        }
-			      }
-			    }
-			  }
-			};
+						  "event": {
+						    "type": "message_create",
+						    "message_create": {
+						      "target": {
+						        "recipient_id": sender
+						      },
+						      "message_data": {
+						        "text": "What's your favorite type of bird?",
+						        "quick_reply": {
+						          "type": "options",
+						          "options": [
+						            {
+						              "label": "Red Bird",
+						              "description": "A description about the red bird.",
+						              "metadata": "external_id_1"
+						            },
+						            {
+						              "label": "Blue Bird",
+						              "description": "A description about the blue bird.",
+						              "metadata": "external_id_2"
+						            },
+						            {
+						              "label": "Black Bird",
+						              "description": "A description about the black bird.",
+						              "metadata": "external_id_3"
+						            },
+						            {
+						              "label": "White Bird",
+						              "description": "A description about the white bird.",
+						              "metadata": "external_id_4"
+						            }
+						          ]
+						        }
+						      }
+						    }
+  }
+};
 
 			T.post('direct_messages/events/new', msg, sent);
 
