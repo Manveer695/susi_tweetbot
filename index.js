@@ -150,7 +150,7 @@ function TwitterBot() {
 		console.log(directMsg);
 
 		if(directMsg.direct_message.text === "Get started"){
-			makeEvent(senderId);
+			makeEvent(senderId, senderName);
 		}
 		else{
 			var queryUrl = 'http://api.susi.ai/susi/chat.json?q=' + encodeURI(directMsg.direct_message.text);
@@ -352,7 +352,7 @@ function TwitterBot() {
 					
 	}	
 
-	function makeEvent(sender) {
+	function makeEvent(sender, senderN) {
 		var queryUrl = 'http://api.susi.ai/susi/chat.json?q=get+started';
 		var message = '';
 		request({
@@ -368,6 +368,20 @@ function TwitterBot() {
 			}
 			console.log('hello\n');
 			setTimeout(function(){
+				var msg = {
+					text: "hi",
+					screen_name: senderN
+				}
+				T.post('direct_messages/new', msg, sent);
+
+				function sent(err, data, response) {
+					if (err) {
+						console.log('Something went wrong!');
+						console.log(err);
+					} else {
+						console.log('Message was sent!');
+					}
+				}
 				var msg = {
 							  "event": {
 							    "type": "message_create",
