@@ -366,6 +366,7 @@ function TwitterBot() {
 				message = 'Oops, Looks like Susi is taking a break, She will be back soon';
 				console.log(err);
 			}
+			console.log('hello\n');
 			var msg = {
 			  "event": {
 			    "type": "message_create",
@@ -387,7 +388,7 @@ function TwitterBot() {
 			    }
 			  }
 			};
-			console.log('hello');
+
 			T.post('direct_messages/events/new', msg, sent);
 
 			function sent(err, data, response) {
