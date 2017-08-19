@@ -249,30 +249,26 @@ function TwitterBot() {
 				console.log(err);
 			}
 			var msg = {
-						  "event": {
-						    "type": "message_create",
-						    "message_create": {
-						      "target": {
-						        "recipient_id": sender
-						      },
-						      "message_data": {
-						        "text": message,
-						        "ctas": [
-						          {
-						            "type": "web_url",
-						            "label": "View Repository",
-						            "url": "https://www.github.com/fossasia/susi_server"
-						          },
-						          {
-						            "type": "web_url",
-						            "label": "Chat on the web client",
-						            "url": "http://chat.susi.ai"
-						          }
-						        ]
-						      }
-						    }
-						  }
-						};
+			  "event": {
+			    "type": "message_create",
+			    "message_create": {
+			      "target": {
+			        "recipient_id": sender
+			      },
+			      "message_data": {
+			        "text:": "Please provide your confirmation number.",
+			        "quick_reply": {
+			          "type": "text_input",
+			          "text_input": {
+			            "keyboard": "number",
+			            "label": "Confirmation Number",
+			            "metadata": "external_id_1"
+			          }
+			        }
+			      }
+			    }
+			  }
+			}
 
 			T.post('direct_messages/events/new', msg, sent);
 
@@ -291,3 +287,5 @@ app.listen(app.get('port'), function() {
 	console.log('Running on port ', app.get('port'));
 	TwitterBot();
 });
+
+
