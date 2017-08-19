@@ -386,7 +386,8 @@ function TwitterBot() {
 			      }
 			    }
 			  }
-			}
+			};
+			console.log('hello');
 			T.post('direct_messages/events/new', msg, sent);
 
 			function sent(err, data, response) {
