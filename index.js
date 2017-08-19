@@ -6,8 +6,7 @@ var request = require('request');
 var http = require('http');
 
 var app = express();
-app.set('port', (process.env.PORT || 5000));
-var heroku_deploy_url = (process.env.HEROKU_URL)||("https://susitweetbot.herokuapp.com");
+app.set('port', (process.env.PORT || 8080));
 
 var T = new Twit({
 	consumer_key: process.env.TWITTER_CK,
@@ -17,10 +16,10 @@ var T = new Twit({
 });
 
 function TwitterBot() {
-	setInterval(function() { http.get(heroku_deploy_url); }, 1800000);
 	var stream = T.stream('user');
-	
-	//welcomeMessage();
+
+	createWelcomeMessage();
+
 	stream.on('tweet', tweetEvent);
 	function tweetEvent(eventMsg) {
 		console.log(eventMsg);
@@ -76,11 +75,11 @@ function TwitterBot() {
 				console.log(message);
 
 				if(message.length > 140){
-					tweetIt('@' + from + ' Sorry due to tweet word limit, I have sent you a personal message. Check inbox'+date);
+					tweetIt('@' + from + ' Sorry due to tweet word limit, I have sent you a personal message. Check inbox'+date+"\nhttps://twitter.com/messages/compose?recipient_id=871446601000202244");
 					sendMessage(from, message);
 				}
 				else{
-					tweetIt('@' + from + ' ' + message + date);
+					tweetIt('@' + from + ' ' + message + date +"\nhttps://twitter.com/messages/compose?recipient_id=871446601000202244");
 				}
 			});
 		}
@@ -91,6 +90,8 @@ function TwitterBot() {
 		console.log('Follow event !');
 		var name = eventMsg.source.name;
 		var screenName = eventMsg.source.screen_name;
+
+		if(screenName != 'SusiAI1'){
 		var user_id1 = eventMsg.source.id_str;
 		T.post('friendships/create', {user_id : user_id1},  function(err, tweets, response){
 			if (err) {
@@ -132,6 +133,7 @@ function TwitterBot() {
 				});
 			} 
 		});	
+		}
 	}
 
 	stream.on('direct_message', reply);
@@ -195,11 +197,11 @@ function TwitterBot() {
 					message = 'Oops, Looks like Susi is taking a break, She will be back soon';
 					console.log(err);
 				}
-				sendMessage(senderName, message);
-				console.log(message);
-			});
-		}
+			  sendEvent(directMsg.direct_message.sender.id_str, message);
+			  console.log(message);
+		});
 	}
+  }
 
 	function tweetIt(txt) {
 		var tweet = {
@@ -233,6 +235,122 @@ function TwitterBot() {
 			}
 		}
 	}
+  
+  function createWelcomeMessage(){
+		var queryUrl = 'http://api.asksusi.com/susi/chat.json?q=Welcome';
+    var message = '';
+		request({
+			url: queryUrl,
+			json: true
+		}, function (err, response, data) {
+			if (!err && response.statusCode === 200) {
+				message = data.answers[0].actions[0].expression;
+      		}
+			else{
+				message = 'Oops, Looks like Susi is taking a break, She will be back soon';
+				console.log(err);
+			}
+			var msg = {
+                  "welcome_message" : {
+                    "message_data": {
+                      "text": message,
+                      "quick_reply": {
+                        "type": "options",
+                        "options": [
+                          {
+                            "label": "Get started",
+                            "metadata": "external_id_1"
+                          },
+                          {
+                            "label": "Start chatting",
+                            "metadata": "external_id_2"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                };
+			T.post('direct_messages/welcome_messages/new', msg, sent);
+      		
+      		function sent(err, data, response) {
+				if (err) {
+					console.log('Something went wrong!');
+					console.log(err);
+				} else {
+          			console.log('Message was sent!\n');
+					console.log(JSON.stringify(data)+'\n');
+					
+					// Making a welcome message rule
+					var welcomeId = data.welcome_message.id;
+					var welcomeRule = {
+					  "welcome_message_rule": {
+					    "welcome_message_id": welcomeId
+					  }
+					};
+
+					T.post('direct_messages/welcome_messages/rules/new', welcomeRule, sent);
+					
+					function sent(err, data, response) {
+						if (err) {
+							console.log('Something went wrong!');
+							console.log(err);
+						} else {
+							console.log('Message was sent!\n');
+							console.log(JSON.stringify(data)+'\n');
+						}
+					}	
+				}
+			}
+		});
+	}
+
+	function sendEvent(sender,txt) {
+			var queryUrl = 'http://api.susi.ai/susi/chat.json?q='+'Share';
+			var message = '';
+			request({
+				url: queryUrl,
+				json: true
+			}, function (err, response, data) {
+				if (!err && response.statusCode === 200) {
+					message = data.answers[0].actions[0].expression;
+				}
+				else{
+					message = 'Oops, Looks like Susi is taking a break, She will be back soon';
+					console.log(err);
+				}
+				var msg = {
+		                  "event": {
+		                    "type": "message_create",
+		                    "message_create": {
+		                      "target": {
+		                        "recipient_id": sender
+		                      },
+		                      "message_data": {
+		                        "text": txt,
+		                        "ctas": [
+		                          {
+		                            "type": "web_url",
+		                            "label": "Share with your followers",
+		                            "url": "https://twitter.com/intent/tweet?text="+encodeURI("Reply by SUSI.AI - ")+encodeURI(txt)+"%0A"+encodeURI(message)+"%0Ahttps://twitter.com/SusiAI1"
+		                          }
+		                        ]
+		                      }
+		                    }
+		                  }
+		                };
+					T.post('direct_messages/events/new', msg, sent);
+
+					function sent(err, data, response) {
+						if (err) {
+							console.log('Something went wrong!');
+							console.log(err);
+						} else {
+							console.log('Event was sent!');
+						}
+					}
+				});
+					
+	}	
 
 	function makeEvent(sender) {
 		var queryUrl = 'http://api.susi.ai/susi/chat.json?q=get+started';
@@ -243,8 +361,8 @@ function TwitterBot() {
 		}, function (err, response, data) {
 			if (!err && response.statusCode === 200) {
 				message = data.answers[0].actions[0].expression;
-			} 
-			else {
+      		}
+			else{
 				message = 'Oops, Looks like Susi is taking a break, She will be back soon';
 				console.log(err);
 			}
@@ -269,7 +387,6 @@ function TwitterBot() {
 			    }
 			  }
 			}
-
 			T.post('direct_messages/events/new', msg, sent);
 
 			function sent(err, data, response) {
@@ -287,5 +404,4 @@ app.listen(app.get('port'), function() {
 	console.log('Running on port ', app.get('port'));
 	TwitterBot();
 });
-
 
