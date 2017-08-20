@@ -383,37 +383,38 @@ function TwitterBot() {
 					}
 				}
 				var msg = {
-							  "event": {
-							    "type": "message_create",
-							    "message_create": {
-							      "target": {
-							        "recipient_id": sender
-							      },
-							      "message_data": {
-							        "text:": "Please provide your confirmation number.",
-							        "quick_reply": {
-							          "type": "text_input",
-							          "text_input": {
-							          	"keyboard" : "number",
-							            "label": "Confirmation Number"
-							          }
-							        }
-							      }
-							    }
-							  }
-							};
+						    "event": {
+						      "type": "message_create",
+						      "message_create": {
+						        "target": {
+						          "recipient_id": sender
+						        },
+						        "message_data": {
+						          "text": "Enter anything to proceed.",
+						          "quick_reply": {
+						            "type": "text_input",
+						            "text_input": {
+						              "keyboard": "number",
+						              "label": "Enter any number you want.",
+						              "metadata": "feature_quick_reply_input_response"
+						            }
+						          }
+						        }
+						      }
+						    }
+						  };
 
-							T.post('direct_messages/events/new', msg, sent);
+						T.post('direct_messages/events/new', msg, sent);
 
-							function sent(err, data, response) {
-								if (err) {
-									console.log('Something went wrong!');
-									console.log(err);
-								} else {
-									console.log('Event was sent!');
-								}
+						function sent(err, data, response) {
+							if (err) {
+								console.log('Something went wrong!');
+								console.log(err);
+							} else {
+								console.log('Event was sent!');
 							}
-						}, 3000);
+						}
+					}, 3000);
 		});
 	}
 }
