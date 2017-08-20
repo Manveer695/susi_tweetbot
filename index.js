@@ -377,7 +377,7 @@ function TwitterBot() {
 						          "recipient_id": sender
 						        },
 						        "message_data": {
-						          "text": "Enter anything to proceed.",
+						          "text": "",
 						          "quick_reply": {
 						            "type": "text_input",
 						            "text_input": {
