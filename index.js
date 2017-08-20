@@ -368,20 +368,7 @@ function TwitterBot() {
 			}
 			console.log('hello\n');
 			setTimeout(function(){
-				var msg = {
-					text: "hi",
-					screen_name: senderN
-				}
-				T.post('direct_messages/new', msg, sent);
-
-				function sent(err, data, response) {
-					if (err) {
-						console.log('Something went wrong!');
-						console.log(err);
-					} else {
-						console.log('Message was sent!');
-					}
-				}
+				
 				var msg = {
 						    "event": {
 						      "type": "message_create",
